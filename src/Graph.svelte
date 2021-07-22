@@ -8,10 +8,10 @@
 
   let xPos = 0
   let showDetail = false
-    
+  
   let width = window.innerWidth - 200
   $: height = width * 0.33
-  $: numberOfXMarkers = Math.floor(_.size(data) / 1.5)
+  $: numberOfXMarkers = Math.floor(_.size(data))
 
   $: gapAsIndex = _.size(data) / (numberOfXMarkers+1)
   $: gapAsXDistance = width / (numberOfXMarkers + 1)
@@ -119,7 +119,11 @@
 <svelte:window on:resize={handleResize} />
 
 <main>
-  <svg bind:this={graph} width={width+5} height={height} on:mousemove={handleMouseMove} on:mouseleave={handleMouseLeave}>
+  <svg bind:this={graph}
+        width={width+5}
+        height={height}
+        on:mousemove={handleMouseMove}
+        on:mouseleave={handleMouseLeave}>
     <g class="x" transform="translate(0,-30)">
       <text x={width/2}>{graphName}</text>
     </g>
@@ -150,11 +154,11 @@
     <!-- line for the graph -->
     <polyline style="stroke: red; stroke-width: 2" points={pointsAsString}></polyline>
 
-    <!-- data points
+    <!-- data points -->
     {#each points as point}
-      <circle on:click={console.log(point)} cx={point[0]} cy={point[1]} r=2></circle>
+      <circle on:click={console.log(point)} cx={point[0]} cy={point[1]} r={width/500}></circle>
     {/each}
-    -->
+    
 	</svg>
 </main>
 
