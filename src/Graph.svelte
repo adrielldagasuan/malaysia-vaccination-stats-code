@@ -1,30 +1,33 @@
 <script>
   import * as _ from 'lodash-es'
-
+  
   export let data
   export let dose
   export let stat
-  let graphName, points, pointsAsString, minDate, maxDate, minCount, maxCount, graph, countAtX, dateAtX
+
+  let graphName, points, pointsAsString, minCount, maxCount, graph, countAtX, dateAtX
 
   let xPos = 0
-  let showDetail = false
-  
+  let showDetail = false  
+
   let width = window.innerWidth - 200
+
   $: height = width * 0.33
-  $: numberOfXMarkers = Math.floor(_.size(data))
+  $: numberOfXMarkers = Math.floor(_.size(data)-1)
 
   $: gapAsIndex = _.size(data) / (numberOfXMarkers+1)
   $: gapAsXDistance = width / (numberOfXMarkers + 1)
 
-  $: if (width || stat || dose) {
+  $: minDate = data[0].date
+  $: maxDate = _.last(data).date
+
+  $: if (data || width || stat || dose) {
+  
     if (dose == 2) {
       graphName = `${stat} (2 Doses)`
     } else if (dose == 1) {
       graphName = `${stat} (1 Dose)`
     }
-
-    minDate = data[0].date
-    maxDate = _.last(data).date
 
     if (stat === 'Total') {
       minCount = getCount(data[0])
@@ -53,10 +56,12 @@
         return parseInt(d.dose2_daily)
       }
     }
-      
   }
 
   function translateYAxis(value) {
+    if (maxCount == minCount) {
+      return height
+    }
     return height - Math.round((value - minCount) / (maxCount - minCount) * height)
   }
   
@@ -119,6 +124,7 @@
 <svelte:window on:resize={handleResize} />
 
 <main>
+  
   <svg bind:this={graph}
         width={width+5}
         height={height}
