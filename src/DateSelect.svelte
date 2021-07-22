@@ -9,11 +9,23 @@
   $: minEndDate = getDaysFrom(startDate, 2)
 
   function handleChangeStart(e) {
-    startDate = e.target.value
+    let targetDate = new Date(e.target.value)
+    let sDate = new Date(minDate)
+    let eDate = new Date(maxStartDate)
+    
+    if (targetDate > sDate && targetDate < eDate) {
+      startDate = e.target.value
+    }
   }
 
   function handleChangeEnd(e) {
-    endDate = e.target.value
+    let targetDate = new Date(e.target.value)
+    let sDate = new Date(minEndDate)
+    let eDate = new Date(maxDate)
+    
+    if (targetDate > sDate && targetDate < eDate) {
+      endDate = e.target.value
+    }
   }
 
   function getDaysFrom(baseDate, distance) {
