@@ -46,6 +46,9 @@ export default {
 		}),
 		copy({
 			targets: [
+				{src: 'index.html', dest:'public'},
+				{src: 'favicon.png', dest:'public'},
+				{src: 'global.css', dest:'public'},
 				{src: 'src/vax_state.csv', dest: 'public/static'}
 			]
 		}),

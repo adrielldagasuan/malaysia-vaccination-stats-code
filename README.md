@@ -11,10 +11,10 @@ cd malaysia-vaccination-stats-code
 npm i
 ```
 
-Download `https://github.com/CITF-Malaysia/citf-public/tree/main/vaccination/vax_state.csv` and save inside `src`
+Download the raw version`https://github.com/CITF-Malaysia/citf-public/tree/main/vaccination/vax_state.csv` and save inside `src`
 
 ```
-curl https://github.com/CITF-Malaysia/citf-public/tree/main/vaccination/vax_state.csv -o src/vax_state.csv
+curl https://raw.githubusercontent.com/CITF-Malaysia/citf-public/main/vaccination/vax_state.csv -o src/vax_state.csv
 ```
 
 Generate the files
