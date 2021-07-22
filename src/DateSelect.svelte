@@ -15,9 +15,9 @@
     
     if (targetDate > sDate && targetDate < eDate) {
       startDate = e.target.value
-    } else if (targetDate < sDate && targetDate < eDate) {
+    } else if ((targetDate < sDate && targetDate < eDate) || (targetDate.getTime() === sDate.getTime())) {
       startDate = minDate
-    } else if (targetDate > sDate && targetDate > eDate) {
+    } else if ((targetDate > sDate && targetDate > eDate) || (targetDate.getTime() === eDate.getTime())) {
       startDate = maxStartDate
     }
   }
@@ -26,14 +26,15 @@
     let targetDate = new Date(e.target.value)
     let sDate = new Date(minEndDate)
     let eDate = new Date(maxDate)
+
     
     if (targetDate > sDate && targetDate < eDate) {
       endDate = e.target.value
-    } else if (targetDate > sDate && targetDate > eDate) {
+    } else if ((targetDate > sDate && targetDate > eDate) || (targetDate.getTime() === eDate.getTime())) {
       endDate = maxDate
-    } else if (targetDate < sDate && targetDate < eDate) {
+    } else if ((targetDate < sDate && targetDate < eDate) || (targetDate.getTime() === sDate.getTime())) {
       endDate = minEndDate
-    }
+    } 
   }
 
   function getDaysFrom(baseDate, distance) {
