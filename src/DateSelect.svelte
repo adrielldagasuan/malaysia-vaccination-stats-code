@@ -15,6 +15,10 @@
     
     if (targetDate > sDate && targetDate < eDate) {
       startDate = e.target.value
+    } else if (targetDate < sDate && targetDate < eDate) {
+      startDate = minDate
+    } else if (targetDate > sDate && targetDate > eDate) {
+      startDate = maxStartDate
     }
   }
 
@@ -25,6 +29,10 @@
     
     if (targetDate > sDate && targetDate < eDate) {
       endDate = e.target.value
+    } else if (targetDate > sDate && targetDate > eDate) {
+      endDate = maxDate
+    } else if (targetDate < sDate && targetDate < eDate) {
+      endDate = minEndDate
     }
   }
 
