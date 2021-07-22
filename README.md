@@ -1,4 +1,6 @@
-Visualization of `https://github.com/CITF-Malaysia/citf-public/tree/main/vaccination` using SvelteJS
+Visualization of `https://github.com/CITF-Malaysia/citf-public/tree/main/vaccination` using [SvelteJS](https://svelte.dev/).
+
+Application can be seen in https://init.dppxm197rqtn5.amplifyapp.com/.
 
 ## Installation
 
@@ -20,5 +22,11 @@ curl https://raw.githubusercontent.com/CITF-Malaysia/citf-public/main/vaccinatio
 Generate the files
 
 ```
-npm run-script build
+npm run build
+```
+
+To run locally
+
+```
+npm run dev
 ```
