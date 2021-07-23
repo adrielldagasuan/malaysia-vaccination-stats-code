@@ -8,7 +8,7 @@
 
   export let graphName;
 
-  let points, pointsAsString, graph, countAtX, dateAtX, minY, maxY;
+  let dataPoints, dataPointsAsString, graph, countAtX, dateAtX, minY, maxY;
 
   let xPos = 0;
   let showDetail = false;
@@ -29,8 +29,8 @@
     minY = _.min(counts);
     maxY = _.max(counts);
 
-    points = getPoints();
-    pointsAsString = getPointsAsString();
+    dataPoints = getDataPoints();
+    dataPointsAsString = getPointsAsString();
   }
 
   function translateYAxis(value) {
@@ -40,7 +40,7 @@
     return height - Math.round(((value - minY) / (maxY - minY)) * height);
   }
 
-  function getPoints() {
+  function getDataPoints() {
     let points = []; // xAxis, yAxis, date, count
 
     let firstCount = getY(data[0]);
@@ -64,9 +64,7 @@
   }
 
   function getPointsAsString() {
-    let points = getPoints();
-    let pointsAsString = points.map((p) => p.slice(0, 2).join(",")).join(" ");
-    return pointsAsString;
+    return dataPoints.map((p) => p.slice(0, 2).join(",")).join(" ");
   }
 
   function handleResize() {
@@ -74,8 +72,7 @@
   }
 
   function handleMouseMove(e) {
-    let g = graph;
-    var dim = g.getBoundingClientRect();
+    var dim = graph.getBoundingClientRect();
     xPos = e.x - dim.x;
     let index = getIndexAtX();
     countAtX = getY(data[index]);
@@ -138,10 +135,10 @@
     </g>
 
     <!-- line for the graph -->
-    <polyline style="stroke: red; stroke-width: 2" points={pointsAsString} />
+    <polyline style="stroke: red; stroke-width: 2" points={dataPointsAsString} />
 
     <!-- data points -->
-    {#each points as point}
+    {#each dataPoints as point}
       <circle
         on:click={console.log(point)}
         cx={point[0]}
