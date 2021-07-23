@@ -9,8 +9,11 @@
   let uniqueStates = [];
   let recordsByState;
   let recordsByDate;
+  let horizontalLayout = true;
+  let stateShown = "";
 
   onMount(async () => {
+    handleWindowResize();
     const res = await fetch("./static/vax_state.csv");
     const csv = await res.text();
 
@@ -38,13 +41,53 @@
   function getDataForState(state) {
     return _.values(recordsByState[state]);
   }
+
+  function handleWindowResize() {
+    if (window.innerWidth < 500) {
+      console.log("vertical");
+      horizontalLayout = false;
+    } else {
+      console.log("horizontal");
+      horizontalLayout = true;
+    }
+  }
+
+  function selectState(state) {
+    stateShown = stateShown === state ? "" : state;
+  }
 </script>
+
+<svelte:window on:resize={handleWindowResize} />
 
 <main>
   <div class="container">
     <div class="center">Malaysia Covid-19 Vaccination Stats</div>
+    {#if horizontalLayout}
+      <ul class="center menu">
+        {#each uniqueStates as state}
+          <li
+            class={stateShown === state ? "selected" : ""}
+            on:click={() => selectState(state)}
+          >
+            {state}
+          </li>
+        {/each}
+      </ul>
+    {/if}
+
     {#each uniqueStates as state}
-      <State allData={getDataForState(state)} {state} />
+      <!-- Show selection above expected graph if layout is vertical -->
+      {#if !horizontalLayout}
+        <div
+          class="wrapper {stateShown === state ? 'selected' : ''}"
+          on:click={() => selectState(state)}
+        >
+          <div class="grid">{state}</div>
+        </div>
+      {/if}
+      {#if stateShown === state}
+        <State allData={getDataForState(state)} />
+      {/if}
     {/each}
   </div>
 </main>
@@ -58,5 +101,41 @@
   .center {
     display: grid;
     justify-content: center;
+  }
+
+  .grid {
+    padding: 0.5em;
+    display: grid;
+    justify-content: space-around;
+  }
+
+  .wrapper {
+    display: grid;
+    gap: 10px;
+  }
+  .wrapper:hover {
+    background-color: rgb(255, 123, 75);
+  }
+
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    max-width: 720px;
+    margin: 0 auto;
+    list-style: none;
+  }
+
+  .menu li {
+    padding: 1%;
+  }
+
+  .menu li:hover {
+    background-color: rgb(255, 123, 75);
+  }
+
+  .selected {
+    background-color: rgb(255, 123, 75);
   }
 </style>
