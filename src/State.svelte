@@ -6,14 +6,21 @@
 
   let data = allData;
 
-  let minDate = allData[0].date;
-  let maxDate = _.last(allData).date;
+  let minDate = data[0].date;
+  let maxDate = _.last(data).date;
+
+  let graphName;
 
   let startDate = minDate;
   let endDate = maxDate;
 
   let selectedDose = 2;
   let selectedStat = "Total";
+
+  let getX = (obj) => {
+    return obj.date;
+  };
+  let getY;
 
   $: if (startDate || endDate) {
     let startIndex = _.findIndex(allData, (r) => {
@@ -27,12 +34,48 @@
     data = _.slice(allData, startIndex, endIndex + 1);
   }
 
+  $: if (selectedDose || selectedStat) {
+    if (selectedStat === "Total") {
+      if (selectedDose == 1) {
+        getY = getTotal1Dose;
+        graphName = "Total numbers for 1 Dose";
+      } else if (selectedDose == 2) {
+        graphName = "Total numbers for 2 Doses";
+        getY = getTotal2Doses;
+      }
+    } else if (selectedStat === "Daily") {
+      if (selectedDose == 1) {
+        graphName = "Daily numbers for 1 Dose";
+        getY = getDaily1Dose;
+      } else if (selectedDose == 2) {
+        graphName = "Daily numbers for 2 Doses";
+        getY = getDaily2Doses;
+      }
+    }
+  }
+
   function handleDose(dose) {
     selectedDose = dose;
   }
 
   function handleStat(stat) {
     selectedStat = stat;
+  }
+
+  function getTotal2Doses(obj) {
+    return parseInt(obj.dose2_cumul);
+  }
+
+  function getTotal1Dose(obj) {
+    return parseInt(obj.dose1_cumul);
+  }
+
+  function getDaily2Doses(obj) {
+    return parseInt(obj.dose2_daily);
+  }
+
+  function getDaily1Dose(obj) {
+    return parseInt(obj.dose1_daily);
   }
 </script>
 
@@ -74,7 +117,7 @@
     </div>
   </div>
   <DateSelect bind:startDate bind:endDate {minDate} {maxDate} />
-  <Graph {data} dose={selectedDose} stat={selectedStat} />
+  <Graph {data} {graphName} {getX} {getY} />
 </main>
 
 <style>

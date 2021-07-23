@@ -2,17 +2,13 @@
   import * as _ from "lodash-es";
 
   export let data;
-  export let dose;
-  export let stat;
 
-  let graphName,
-    points,
-    pointsAsString,
-    minCount,
-    maxCount,
-    graph,
-    countAtX,
-    dateAtX;
+  export let getX; // function to get X data
+  export let getY; // function to get Y data
+
+  export let graphName;
+
+  let points, pointsAsString, graph, countAtX, dateAtX, minY, maxY;
 
   let xPos = 0;
   let showDetail = false;
@@ -25,63 +21,35 @@
   $: gapAsIndex = _.size(data) / (numberOfXMarkers + 1);
   $: gapAsXDistance = width / (numberOfXMarkers + 1);
 
-  $: minDate = data[0].date;
-  $: maxDate = _.last(data).date;
+  $: minX = getX(data[0]);
+  $: maxX = getX(_.last(data));
 
-  $: if (data || width || stat || dose) {
-    if (dose == 2) {
-      graphName = `${stat} (2 Doses)`;
-    } else if (dose == 1) {
-      graphName = `${stat} (1 Dose)`;
-    }
-
-    if (stat === "Total") {
-      minCount = getCount(data[0]);
-      maxCount = getCount(_.last(data));
-    } else {
-      let counts = _.values(data).map((r) => getCount(r));
-      minCount = _.min(counts);
-      maxCount = _.max(counts);
-    }
+  $: if (data || width) {
+    let counts = _.values(data).map((r) => getY(r));
+    minY = _.min(counts);
+    maxY = _.max(counts);
 
     points = getPoints();
     pointsAsString = getPointsAsString();
   }
 
-  function getCount(d) {
-    if (stat === "Total") {
-      if (dose == 1) {
-        return parseInt(d.dose1_cumul);
-      } else if (dose == 2) {
-        return parseInt(d.dose2_cumul);
-      }
-    } else if (stat === "Daily") {
-      if (dose == 1) {
-        return parseInt(d.dose1_daily);
-      } else if (dose == 2) {
-        return parseInt(d.dose2_daily);
-      }
-    }
-  }
-
   function translateYAxis(value) {
-    if (maxCount == minCount) {
+    if (maxY == minY) {
       return height;
     }
-    return (
-      height - Math.round(((value - minCount) / (maxCount - minCount)) * height)
-    );
+    return height - Math.round(((value - minY) / (maxY - minY)) * height);
   }
 
   function getPoints() {
     let points = []; // xAxis, yAxis, date, count
-    let firstCount = getCount(data[0]);
-    points.push([0, translateYAxis(firstCount), minDate, firstCount]);
+
+    let firstCount = getY(data[0]);
+    points.push([0, translateYAxis(firstCount), minX, firstCount]);
 
     // points in between
     for (var i = 1; i <= numberOfXMarkers; i++) {
       var index = Math.floor(i * gapAsIndex);
-      var count = getCount(data[index]);
+      var count = getY(data[index]);
       var date = data[index].date;
       points.push([
         Math.round(i * gapAsXDistance),
@@ -90,8 +58,8 @@
         count,
       ]);
     }
-    let lastCount = getCount(_.last(data));
-    points.push([width, translateYAxis(lastCount), maxDate, lastCount]);
+    let lastCount = getY(_.last(data));
+    points.push([width, translateYAxis(lastCount), maxX, lastCount]);
     return points;
   }
 
@@ -105,17 +73,17 @@
     width = window.innerWidth - 200;
   }
 
-  function handleMouseMove(event) {
-    let e = graph;
-    var dim = e.getBoundingClientRect();
-    xPos = event.x - dim.x;
+  function handleMouseMove(e) {
+    let g = graph;
+    var dim = g.getBoundingClientRect();
+    xPos = e.x - dim.x;
     let index = getIndexAtX();
-    countAtX = getCount(data[index]);
-    dateAtX = data[index].date;
+    countAtX = getY(data[index]);
+    dateAtX = getX(data[index]);
     showDetail = true;
   }
 
-  function handleMouseLeave(event) {
+  function handleMouseLeave(e) {
     xPos = 0;
     showDetail = false;
   }
@@ -156,8 +124,8 @@
       <text y={height + 20} x={xPos}>{dateAtX}</text>
     {:else}
       <g class="x" transform="translate(0,{height + 20})">
-        <text x="0">{minDate}</text>
-        <text x={width}>{maxDate}</text>
+        <text x="0">{minX}</text>
+        <text x={width}>{maxX}</text>
       </g>
     {/if}
 
@@ -165,8 +133,8 @@
     <!-- svelte-ignore component-name-lowercase -->
     <line x1="0" x2="0" y1="0" y2={height} />
     <g class="y" transform="translate(-10,0)">
-      <text y={height}>{minCount}</text>
-      <text y="0">{maxCount}</text>
+      <text y={height}>{minY}</text>
+      <text y="0">{maxY}</text>
     </g>
 
     <!-- line for the graph -->

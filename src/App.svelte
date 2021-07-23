@@ -4,7 +4,7 @@
   import * as Papa from "papaparse";
   import State from "./State.svelte";
 
-  let data;
+  let data, population;
   let uniqueDates = [];
   let uniqueStates = [];
   let recordsByState;
@@ -14,10 +14,13 @@
 
   onMount(async () => {
     handleWindowResize();
-    const res = await fetch("./static/vax_state.csv");
-    const csv = await res.text();
+    const vax = await fetch("./static/vax_state.csv");
+    const pop = await fetch("./static/population.csv");
+    const vaxText = await vax.text();
+    const popText = await pop.text();
 
-    data = Papa.parse(csv, { header: true }).data;
+    data = Papa.parse(vaxText, { header: true }).data;
+    population = Papa.parse(popText, { header: true }).data;
 
     var objects = _.entries(data)
       .map((r) => {
@@ -44,10 +47,8 @@
 
   function handleWindowResize() {
     if (window.innerWidth < 500) {
-      console.log("vertical");
       horizontalLayout = false;
     } else {
-      console.log("horizontal");
       horizontalLayout = true;
     }
   }
@@ -73,6 +74,10 @@
           </li>
         {/each}
       </ul>
+    {/if}
+
+    {#if (stateShown === "" && horizontalLayout) || !horizontalLayout}
+      <div class="center">Select a state to view the statistics</div>
     {/if}
 
     {#each uniqueStates as state}
