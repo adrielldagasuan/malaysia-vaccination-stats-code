@@ -16,10 +16,10 @@
   let width = window.innerWidth - 200;
 
   $: height = width * 0.33;
-  $: numberOfXMarkers = Math.floor(_.size(data) - 1);
+  $: numberOfPoints = Math.floor(_.size(data) - 1);
 
-  $: gapAsIndex = _.size(data) / (numberOfXMarkers + 1);
-  $: gapAsXDistance = width / (numberOfXMarkers + 1);
+  $: gapAsIndex = _.size(data) / (numberOfPoints + 1);
+  $: gapAsXDistance = width / (numberOfPoints + 1);
 
   $: minX = getX(data[0]);
   $: maxX = getX(_.last(data));
@@ -47,10 +47,10 @@
     points.push([0, translateYAxis(firstCount), minX, firstCount]);
 
     // points in between
-    for (var i = 1; i <= numberOfXMarkers; i++) {
+    for (var i = 1; i <= numberOfPoints; i++) {
       var index = Math.floor(i * gapAsIndex);
       var count = getY(data[index]);
-      var date = data[index].date;
+      var date = getX(data[index]);
       points.push([
         Math.round(i * gapAsXDistance),
         translateYAxis(count),
