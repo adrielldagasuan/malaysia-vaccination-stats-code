@@ -1,6 +1,6 @@
 Visualization of `https://github.com/CITF-Malaysia/citf-public/tree/main/vaccination` using [SvelteJS](https://svelte.dev/).
 
-Application can be seen in https://init.dppxm197rqtn5.amplifyapp.com/.
+Application can be seen in https://vaccination-stats-my.netlify.app/.
 
 ## Installation
 
