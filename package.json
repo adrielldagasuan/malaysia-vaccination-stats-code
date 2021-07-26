@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "prep": "curl https://raw.githubusercontent.com/CITF-Malaysia/citf-public/main/vaccination/vax_state.csv -o src/vax_state.csv",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear"
