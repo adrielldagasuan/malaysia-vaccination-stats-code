@@ -66,8 +66,8 @@
     {#if horizontalLayout}
       <ul class="center menu">
         {#each uniqueStates as state}
-          <li
-            class={stateShown === state ? "selected" : ""}
+          <li 
+            class="clickable {stateShown === state ? "selected" : ""}"
             on:click={() => selectState(state)}
           >
             {state}
@@ -84,7 +84,7 @@
       <!-- Show selection above expected graph if layout is vertical -->
       {#if !horizontalLayout}
         <div
-          class="wrapper {stateShown === state ? 'selected' : ''}"
+          class="wrapper clickable {stateShown === state ? 'selected' : ''}"
           on:click={() => selectState(state)}
         >
           <div class="grid">{state}</div>
@@ -142,5 +142,9 @@
 
   .selected {
     background-color: rgb(255, 123, 75);
+  }
+
+  .clickable {
+    cursor: pointer;
   }
 </style>
